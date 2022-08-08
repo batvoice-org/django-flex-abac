@@ -1,0 +1,8 @@
+include LICENSE
+include VERSION
+include README.md
+recursive-include docs *
+recursive-include flex_abac *
+prune tests*
+prune docs*
+prune flex_abac/tests*

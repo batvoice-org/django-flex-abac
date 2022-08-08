@@ -1,0 +1,102 @@
+types:
+  CategoricalAttribute:
+    - name: "Desk"
+      field_name: "desk__id"
+      class_name: "exampleapp.document"
+
+  GenericAttribute:
+    - name: "Brand name"
+      field_name: "brand__name"
+      class_name: "exampleapp.document"
+      extra_fields:
+        "id": "brand__id"
+        "name": "brand__name"
+      values:
+        - value: "Brand3"
+        - value: "Brand4"
+    - name: "Brand id"
+      field_name: "brand__id"
+      class_name: "exampleapp.document"
+      values:
+        - value: 2
+        - value: 3
+
+
+  NestedCategoricalAttribute:
+    - name: "Topic name"
+      field_name: "topics"
+      class_name: "exampleapp.document"
+      nested_field_name: "name"
+      parent_field_name: "parent"
+      field_type: "exampleapp.topic"
+      extra_fields:
+        "id": "id"
+        "name": "name"
+      values:
+        - value: "Topic 1"
+        - value: "Topic 2.1"
+        - value: "Topic 2.2"
+    - name: "Topic id"
+      field_name: "topics"
+      class_name: "exampleapp.document"
+      nested_field_name: "id"
+      parent_field_name: "parent__id"
+      field_type: "exampleapp.topic"
+      values:
+        - value: 3
+        - value: 8
+
+  MaterializedNestedCategoricalAttribute:
+    - types:
+        name: Country
+        class_name: "exampleapp.document"
+        extra_fields:
+          "id": "id"
+          "name": "name"
+        children:
+          - name: Province
+            extra_fields:
+              "id": "id"
+              "name": "name"
+            children:
+              - name: City
+                extra_fields:
+                  "id": "id"
+                  "name": "name"
+        values:
+          - value: "Region 1"
+            type: Country
+            children:
+              - value: "Region 1.1"
+                type: Province
+                children:
+                  - value: "Region 1.1.1"
+                    type: City
+                  - value: "Region 1.1.2"
+                    type: City
+                  - value: "Region 1.1.3"
+                    type: City
+              - value: "Region 1.2"
+                type: Province
+                children:
+                  - value: "Region 1.2.1"
+                    type: City
+                  - value: "Region 1.2.2"
+                    type: City
+          - value: "Region 2"
+            type: Country
+            children:
+              - value: "Region 2.1"
+                type: Province
+                children:
+                  - value: "Region 2.1.1"
+                    type: City
+                  - value: "Region 2.1.2"
+                    type: City
+              - value: "Region 2.2"
+                type: Province
+                children:
+                  - value: "Region 2.2.1"
+                    type: City
+                  - value: "Region 2.2.2"
+                    type: City

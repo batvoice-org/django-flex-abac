@@ -1,0 +1,20 @@
+import factory
+from ..models import MaterializedNestedCategoricalAttribute, ModelMaterializedNestedCategoricalAttribute
+
+from django.contrib.contenttypes.models import ContentType
+
+class CategoricalAttributeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MaterializedNestedCategoricalAttribute
+
+
+class ModelCategoricalAttributeFactory(factory.django.DjangoModelFactory):
+    owner_content_object = factory.LazyAttribute(
+        lambda o: ContentType.objects.get_for_model(o.content_object))
+    attribute_type = factory.SubFactory(CategoricalAttributeFactory)
+
+    class Meta:
+        model = ModelMaterializedNestedCategoricalAttribute
+
+    class Params:
+        content_object = None

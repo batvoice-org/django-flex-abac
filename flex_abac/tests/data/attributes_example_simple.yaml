@@ -1,0 +1,5 @@
+types:
+  CategoricalAttribute:
+    - name: "Brand"
+      field_name: "brand__id"
+      class_name: "exampleapp.document"

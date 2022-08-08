@@ -1,0 +1,16 @@
+types:
+  CategoricalAttribute:
+    - name: "Desk"
+      field_name: "desk__id"
+      class_name: "exampleapp.document"
+      values:
+        - value: 1
+        - value: 2
+        - value: 3
+    - name: "Brand"
+      field_name: "brand__id"
+      class_name: "exampleapp.document"
+      values:
+        - value: 1
+        - value: 2
+        - value: 3

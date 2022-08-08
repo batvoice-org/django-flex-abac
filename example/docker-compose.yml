@@ -1,0 +1,62 @@
+version: "3.7"
+
+
+services:
+  postgres:
+    image: postgres:10.6-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - flex_abac__data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=flexrbac_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - 5050:80
+    volumes:
+      - pga4volume:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@flex_abac.com
+      PGADMIN_DEFAULT_PASSWORD: flex_abac
+      SERVER_PORT: 80
+    depends_on:
+      - postgres
+
+  backend:
+    build: 
+      context: .
+      dockerfile: dockerfile.backend.dev
+    volumes:
+      - ./example/backend:/code
+    environment: 
+      POSTGRES_SERVICE_HOST: postgres
+      POSTGRES_NAME_LIBRARY: flexrbac_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      DB_PORT: 5432
+    ports:
+      - 8000:8000
+      - 5678:5678 
+    depends_on:
+      - postgres
+
+  frontend:
+    # entrypoint: ["sh", "-c", "sleep 2073600"]
+    build:
+      context: .
+      dockerfile: dockerfile.frontend.dev
+    volumes:
+      - ./example/frontend:/app
+      - /app/node_modules
+    ports:
+      - 8081:8080
+    depends_on:
+      - backend
+volumes:
+  flex_abac__data:
+  pga4volume:
