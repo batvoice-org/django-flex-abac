@@ -24,7 +24,7 @@ USE_PERMISSIONS = getattr(settings, "USE_PERMISSIONS_ON_FLEX_ARBAC_ENDPOINTS", F
 # ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [CanExecuteMethodPermission] if USE_PERMISSIONS else []
-    queryset = User.objects
+    queryset = User.objects.filter(is_active=True)
     serializer_class = UserSerializer
 
     def get_serializer_context(self):
