@@ -6,7 +6,8 @@ class UserService {
   }
 
   list(params = {}) {
-    return this.request.get('/users/', params)
+    console.log(params)
+    return this.request.get('/users/', {params})
   }
 
   update(id, payload) {

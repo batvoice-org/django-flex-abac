@@ -11,6 +11,7 @@ from flex_abac.permissions import CanExecuteMethodPermission
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 
 from flex_abac.models import BaseAttribute, ActionModel
 from flex_abac.utils.helpers import get_subclasses
@@ -21,11 +22,30 @@ from django.conf import settings
 
 USE_PERMISSIONS = getattr(settings, "USE_PERMISSIONS_ON_FLEX_ARBAC_ENDPOINTS", False)
 
+class UserSetPagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 50
+
+    def get_paginated_response(self, data):
+        response = super(UserSetPagination, self).get_paginated_response(data)
+        response.data['total_pages'] = self.page.paginator.num_pages
+        response.data['current_page_number'] = self.page.number
+        response.data['page_size'] =  self.page_size
+        return response
 # ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [CanExecuteMethodPermission] if USE_PERMISSIONS else []
     queryset = User.objects.filter(is_active=True)
     serializer_class = UserSerializer
+    pagination_class = UserSetPagination
+
+    def get_queryset(self):
+        queryset = User.objects.filter(is_active=True)
+        username = self.request.query_params.get('search', None)
+        if username is not None:
+            queryset = queryset.filter(username__icontains=username)
+        return queryset
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
