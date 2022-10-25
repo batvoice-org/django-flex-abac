@@ -1,4 +1,4 @@
-MAIN_BRANCH=main
+MAIN_BRANCH=master
 CURRENT_VERSION = $(shell cat VERSION)
 CURRENT_BRANCH = $(shell git branch --show-current)
 
