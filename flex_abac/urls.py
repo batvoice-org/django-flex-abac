@@ -2,7 +2,8 @@ from django.urls import path, include
 from rest_framework import routers
 from flex_abac.views import UserViewSet
 from flex_abac.views import (
-    RoleViewSet, PolicyViewSet, ActionViewSet, AttributeTypeViewSet, FilterViewSet, PossibleValuesViewSet
+    RoleViewSet, PolicyViewSet, ActionViewSet, AttributeTypeViewSet, FilterViewSet, PossibleValuesViewSet,
+    RolePolicyViewSet,
 )
 
 # Routers provide an easy way of automatically determining the URL conf.
@@ -11,6 +12,7 @@ router.register(r'users', UserViewSet)
 router.register(r'roles', RoleViewSet)
 router.register(r'policies', PolicyViewSet)
 router.register(r'actions', ActionViewSet)
+router.register(r'role_policies', RolePolicyViewSet)
 router.register(r'attribute-types', AttributeTypeViewSet)
 router.register(r'attribute-filters', FilterViewSet)
 router.register(r'possible-values', PossibleValuesViewSet, basename="possible-values")

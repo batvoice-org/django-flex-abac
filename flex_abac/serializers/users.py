@@ -47,8 +47,11 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def get_roles(self, user_obj):
+        print("&get_roles()")
         if USE_PERMISSIONS:
-            valid_objects_filter = get_filter_for_valid_objects(user_obj, Role)
+            # valid_objects_filter = get_filter_for_valid_objects(user_obj, Role)  # should not be user_obj, but rather self.request.user or smth
+            valid_objects_filter = get_filter_for_valid_objects(self.context['request'].user, Role)
+            print("valid filter", valid_objects_filter)
             return RoleSerializer(Role.objects.filter(userrole__user=user_obj).filter(valid_objects_filter),
                                   context={"remaining_depth": self.remaining_depth}, many=True).data
         else:
@@ -57,12 +60,20 @@ class UserSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
+        print("&in flex_abac serializer update")
+        print("&existing UserRoles (non super admin or global viewer)", UserRole.objects.filter(user=instance).\
+            exclude(role__name__in=("Super Admin Role", "Global Admin Viewer Role")))
         UserRole.objects.filter(user=instance).\
-            exclude(role__name__in=("flex-abac Admin Role", "flex-abac Viewer Role")).\
+            exclude(role__name__in=("Super Admin Role", "Global Admin Viewer Role")).\
             delete()
+
+        print("&after removal", UserRole.objects.filter(user=instance). \
+              exclude(role__name__in=("Super Admin Role", "Global Admin Viewer Role")))
 
         if type(validated_data["roles"]) is not list:
             validated_data["roles"] = [validated_data["roles"]]
+
+        print('validated_data["roles"]', validated_data["roles"])
         for role_value in validated_data["roles"]:
             if type(role_value) == dict:
                 try:
@@ -71,9 +82,12 @@ class UserSerializer(serializers.ModelSerializer):
                     role_serializer.save()
 
                     UserRole.objects.get_or_create(user=instance, role=role_serializer.instance)
+                    print("&got or created UserRole object")
                 except ValidationError as ve:
+                    print('&validation error', ve)
                     role = Role.objects.get(name=role_value["name"])
                     if role:
+                        print(f"getting or creating UserRole on user {instance} and role {role}")
                         UserRole.objects.get_or_create(user=instance, role=role)
                     else:
                         raise ve

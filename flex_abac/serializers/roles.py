@@ -80,7 +80,7 @@ class RoleSerializer(serializers.ModelSerializer):
 
         return instance
 
-
+# Consider renaming this class, as it is attached to Role, not RolePolicy in Meta:
 class RolePolicySerializer(serializers.ModelSerializer):
     policies = WritableSerializerMethodField()
 
