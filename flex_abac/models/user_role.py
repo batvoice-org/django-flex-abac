@@ -29,5 +29,5 @@ from django.dispatch import receiver
 @receiver(post_save, sender=User)
 def save_profile(sender, instance, **kwargs):
     if instance.is_superuser:
-        if Role.objects.filter(name="flex-abac Admin Role").exists():
-            Role.objects.get(name="flex-abac Admin Role").users.add(instance)
+        if Role.objects.filter(name=flex_abac.constants.SUPERADMIN_ROLE).exists():
+            Role.objects.get(name=flex_abac.constants.SUPERADMIN_ROLE).users.add(instance)

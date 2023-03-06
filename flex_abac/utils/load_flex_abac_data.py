@@ -49,7 +49,7 @@ def load_flex_abac_data(admin_users=[], viewer_users=[], clean_users=False):
                       "True in the settings.py file before sending this code to production, in case you want these "
                       "permissions to be applied.")
 
-    flex_abac_admin_role, _ = Role.objects.get_or_create(name="flex-abac Admin Role")
+    flex_abac_admin_role, _ = Role.objects.get_or_create(name=flex_abac.constants.SUPERADMIN_ROLE)
     flex_abac_viewer_role, _ = Role.objects.get_or_create(name="flex-abac Viewer Role")
 
     flex_abac_admin_policy, _ = Policy.objects.get_or_create(name="flex-abac Admin Policy")

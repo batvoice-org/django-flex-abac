@@ -77,7 +77,7 @@ class PermissionViewsTestCase(TestCase):
         self.user_default = User.objects.get(id=1)
         self.user_admin = User.objects.get(id=2)
 
-        flex_abac_admin_role = Role.objects.get(name="flex-abac Admin Role")
+        flex_abac_admin_role = Role.objects.get(name=flex_abac.constants.SUPERADMIN_ROLE)
         flex_abac_admin_role.users.add(self.user_admin)
         flex_abac_admin_role.users.add(self.user_default)
 
@@ -1289,7 +1289,7 @@ class PermissionViewsTestCase(TestCase):
             UserRole.objects.filter(user=self.user_admin).delete()
             UserRole.objects.filter(user=self.user_default).delete()
 
-            flex_abac_admin_role = Role.objects.get(name="flex-abac Admin Role")
+            flex_abac_admin_role = Role.objects.get(name=flex_abac.constants.SUPERADMIN_ROLE)
             flex_abac_viewer_role = Role.objects.get(name="flex-abac Viewer Role")
 
             # UserRoleFactory.create(user=self.user_admin, role=flex_abac_admin_role)
@@ -1408,7 +1408,7 @@ class PermissionViewsTestCase(TestCase):
         CHECK_PERMISSIONS = getattr(settings, "USE_PERMISSIONS_ON_FLEX_ARBAC_ENDPOINTS", False)
 
         try:
-            flex_abac_admin_role = Role.objects.get(name="flex-abac Admin Role")
+            flex_abac_admin_role = Role.objects.get(name=flex_abac.constants.SUPERADMIN_ROLE)
 
             anon_client = APIClient(enforce_csrf_checks=False)
 
