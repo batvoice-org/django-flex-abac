@@ -4,6 +4,11 @@ from flex_abac.models import (
     CategoricalAttribute, ModelCategoricalAttribute, CategoricalFilter, PolicyCategoricalFilter
 )
 
+from flex_abac.constants import (
+    SUPERADMIN_ROLE, GLOBAL_VIEWER_ROLE,
+    SUPERADMIN_ROLE_POLICY, GLOBAL_VIEWER_ROLE_POLICY
+)
+
 from django.contrib.auth.models import User
 
 from django.contrib.contenttypes.models import ContentType
@@ -49,11 +54,11 @@ def load_flex_abac_data(admin_users=[], viewer_users=[], clean_users=False):
                       "True in the settings.py file before sending this code to production, in case you want these "
                       "permissions to be applied.")
 
-    flex_abac_admin_role, _ = Role.objects.get_or_create(name=flex_abac.constants.SUPERADMIN_ROLE)
-    flex_abac_viewer_role, _ = Role.objects.get_or_create(name="flex-abac Viewer Role")
+    flex_abac_admin_role, _ = Role.objects.get_or_create(name=SUPERADMIN_ROLE)
+    flex_abac_viewer_role, _ = Role.objects.get_or_create(name=GLOBAL_VIEWER_ROLE)
 
-    flex_abac_admin_policy, _ = Policy.objects.get_or_create(name="flex-abac Admin Policy")
-    flex_abac_viewer_policy, _ = Policy.objects.get_or_create(name="flex-abac Viewer Policy")
+    flex_abac_admin_policy, _ = Policy.objects.get_or_create(name=SUPERADMIN_ROLE_POLICY)
+    flex_abac_viewer_policy, _ = Policy.objects.get_or_create(name=GLOBAL_VIEWER_ROLE_POLICY)
 
     # flex_abac_hidden_policy, _ = Policy.objects.get_or_create(name="flex-abac Hidden Policy")
 
@@ -66,7 +71,7 @@ def load_flex_abac_data(admin_users=[], viewer_users=[], clean_users=False):
     # Actions creation
     admin_methods = ["read", "write"]
     viewer_methods = ["read"]
-    model_names = ["user", "role", "policy", "action", "basefilter", "baseattribute"]
+    model_names = ["user", "role", "policy", "action", "basefilter", "baseattribute", "rolepolicy"]  # Eric notes; added rolepolicy for meta-permissions to work
     for model_name in model_names:
         for method_name in admin_methods:
             admin_method, _ = Action.objects.get_or_create(name=f"{model_name}__{method_name}",

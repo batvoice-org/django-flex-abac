@@ -1,6 +1,7 @@
 from django.db import models
 
 from flex_abac.models import Role
+from flex_abac.constants import SUPERADMIN_ROLE
 
 class UserRole(models.Model):
     user = models.ForeignKey(
@@ -29,5 +30,5 @@ from django.dispatch import receiver
 @receiver(post_save, sender=User)
 def save_profile(sender, instance, **kwargs):
     if instance.is_superuser:
-        if Role.objects.filter(name=flex_abac.constants.SUPERADMIN_ROLE).exists():
-            Role.objects.get(name=flex_abac.constants.SUPERADMIN_ROLE).users.add(instance)
+        if Role.objects.filter(name=SUPERADMIN_ROLE).exists():
+            Role.objects.get(name=SUPERADMIN_ROLE).users.add(instance)
