@@ -35,7 +35,7 @@ class LoadFlexAbacDataTestCase(TestCase):
         self.assertTrue(Role.objects.filter(name=SUPERADMIN_ROLE).exists(), "Error with roles creation!")
         self.assertTrue(Role.objects.filter(name="flex-abac Viewer Role").exists(), "Error with roles creation!")
 
-        self.assertTrue(Policy.objects.filter(name=SUPERADMIN_ROLE_POLICY).exists(), "Error with policies creation!")
+        self.assertTrue(Policy.objects.filter(name="flex-abac Admin Policy").exists(), "Error with policies creation!")
         self.assertTrue(Policy.objects.filter(name="flex-abac Viewer Policy").exists(), "Error with policies creation!")
 
         self.assertTrue(PolicyAction.objects.filter(policy__name="flex-abac Admin Policy").exists(),
