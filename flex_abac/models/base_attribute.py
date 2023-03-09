@@ -143,7 +143,7 @@ class BaseAttribute(PolymorphicModel):
 
         user_policies = user.get_policies(). \
             filter(action__name=action_name). \
-            exclude(role__name__in=("flex-abac Admin Role", "flex-abac Viewer Role"))
+            exclude(role__name__in=(SUPERADMIN_ROLE, "flex-abac Viewer Role"))
 
         for user_policy in user_policies:
             policy_filters = FilterClass.objects.filter(attribute_type=self, policies=user_policy)

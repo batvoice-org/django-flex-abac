@@ -33,6 +33,7 @@ class UserSetPagination(PageNumberPagination):
         response.data['current_page_number'] = self.page.number
         response.data['page_size'] =  self.page_size
         return response
+
 # ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [CanExecuteMethodPermission] if USE_PERMISSIONS else []

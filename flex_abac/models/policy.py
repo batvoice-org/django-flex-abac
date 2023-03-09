@@ -4,6 +4,7 @@ from django.db.models import Subquery
 from django.db.models.query import Q
 from flex_abac.utils.helpers import get_subclasses
 
+
 class Policy(models.Model):
     name = models.CharField(
         max_length=512,

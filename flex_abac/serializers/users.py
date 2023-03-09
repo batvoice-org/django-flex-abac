@@ -48,7 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_roles(self, user_obj):
         if USE_PERMISSIONS:
-            valid_objects_filter = get_filter_for_valid_objects(user_obj, Role)
+            valid_objects_filter = get_filter_for_valid_objects(self.context['request'].user, Role)
             return RoleSerializer(Role.objects.filter(userrole__user=user_obj).filter(valid_objects_filter),
                                   context={"remaining_depth": self.remaining_depth}, many=True).data
         else:
@@ -58,11 +58,13 @@ class UserSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def update(self, instance, validated_data):
         UserRole.objects.filter(user=instance).\
-            exclude(role__name__in=("flex-abac Admin Role", "flex-abac Viewer Role")).\
+            exclude(role__name__in=("Super Admin Role", "Global Admin Viewer Role")).\
             delete()
+
 
         if type(validated_data["roles"]) is not list:
             validated_data["roles"] = [validated_data["roles"]]
+
         for role_value in validated_data["roles"]:
             if type(role_value) == dict:
                 try:

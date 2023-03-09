@@ -1,3 +1,5 @@
+# TODO: refactor: get_class_names() and get_content_type_id() not DRY
+
 from flex_abac.models import (
     BaseAttribute,
     GenericAttribute,
@@ -20,11 +22,15 @@ from flex_abac.utils.import_attributes import get_content_type_from_class_name
 
 class BaseAttributeSerializer(serializers.HyperlinkedModelSerializer):
     class_name = WritableSerializerMethodField()
+    class_content_type_id = WritableSerializerMethodField()
     extra_fields = serializers.JSONField(required=False)
 
     class Meta:
         model = BaseAttribute
-        fields = ['pk', 'name', 'field_name', 'class_name', 'serializer', 'extra_fields']
+        fields = [
+            'pk', 'name', 'field_name', 'class_name', 'serializer', 'extra_fields',
+            'class_content_type_id',
+        ]
 
     def get_class_name(self, obj):
         raise NotImplementedError
@@ -33,6 +39,12 @@ class BaseAttributeSerializer(serializers.HyperlinkedModelSerializer):
 class GenericAttributeSerializer(BaseAttributeSerializer):
     class Meta(BaseAttributeSerializer.Meta):
         model = GenericAttribute
+
+    """
+    def get_class_content_type_id(self, obj):
+        contenttype = ModelGenericAttribute.objects.get(attribute_type=obj).owner_content_object
+        return contenttype.pk
+    """
 
     def get_class_name(self, obj):
         owner_content_object = ModelGenericAttribute.objects.get(attribute_type=obj).owner_content_object
@@ -69,6 +81,7 @@ class GenericAttributeSerializer(BaseAttributeSerializer):
 
 
 class CategoricalAttributeSerializer(BaseAttributeSerializer):
+
     class Meta(BaseAttributeSerializer.Meta):
         model = CategoricalAttribute
 
@@ -77,6 +90,10 @@ class CategoricalAttributeSerializer(BaseAttributeSerializer):
         if owner_content_object.exists():
             owner_content_object = owner_content_object[0].owner_content_object
         return f"{owner_content_object.app_label}.{owner_content_object.model}"
+
+    def get_class_content_type_id(self, obj):
+        contenttype = ModelCategoricalAttribute.objects.get(attribute_type=obj).owner_content_object
+        return contenttype.pk
 
     def create(self, validated_data):
         attribute_type = CategoricalAttribute.objects.create(
@@ -121,6 +138,10 @@ class NestedCategoricalAttributeSerializer(BaseAttributeSerializer):
     def get_class_name(self, obj):
         owner_content_object = ModelNestedCategoricalAttribute.objects.get(attribute_type=obj).owner_content_object
         return f"{owner_content_object.app_label}.{owner_content_object.model}"
+
+    def get_class_content_type_id(self, obj):
+        contenttype = ModelGenericAttribute.objects.get(attribute_type=obj).owner_content_object
+        return contenttype.pk
 
     def create(self, validated_data):
         attribute_type = NestedCategoricalAttribute.objects.create(
@@ -172,6 +193,10 @@ class MaterializedNestedCategoricalAttributeSerializer(BaseAttributeSerializer):
     def get_class_name(self, obj):
         owner_content_object = ModelMaterializedNestedCategoricalAttribute.objects.get(attribute_type=obj).owner_content_object
         return f"{owner_content_object.app_label}.{owner_content_object.model}"
+
+    def get_class_content_type_id(self, obj):
+        contenttype = ModelGenericAttribute.objects.get(attribute_type=obj).owner_content_object
+        return contenttype.pk
 
     def create(self, validated_data):
         if "parent" in validated_data.keys():

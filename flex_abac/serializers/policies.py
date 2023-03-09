@@ -1,23 +1,17 @@
 from flex_abac.models import (
-    Policy, Action, GenericFilter, PolicyGenericFilter, PolicyFilter, BaseFilter, PolicyAction,
-    ActionModel, BaseAttribute, ModelBaseAttribute
+    Policy, Action, PolicyFilter, BaseFilter, PolicyAction,
+    ActionModel, BaseAttribute,
 )
 
 from flex_abac.checkers import get_filter_for_valid_objects
-
 from django.conf import settings
-
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
-
 from flex_abac.serializers.actions import ActionSerializer
-from flex_abac.serializers.filters import GenericFilterSerializer, PolymorphicFilterSerializer
-
+from flex_abac.serializers.filters import PolymorphicFilterSerializer
 from flex_abac.serializers.attributes import PolymorphicAttributeTypeSerializer
-
 from flex_abac.serializers.utils import WritableSerializerMethodField
 from django.db import transaction
-
 from flex_abac.utils.helpers import get_subclasses
 
 
