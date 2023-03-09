@@ -8,6 +8,8 @@ from flex_abac.models import (
     MaterializedNestedCategoricalAttribute, MaterializedNestedCategoricalFilter,
 )
 
+from flex_abac.constants import SUPERADMIN_ROLE
+
 class LoadFlexAbacDataTestCase(TestCase):
     def setUp(self):
         User.objects.create(username="test_superuser", is_superuser=True)
@@ -30,10 +32,10 @@ class LoadFlexAbacDataTestCase(TestCase):
 
         load_flex_abac_data()
 
-        self.assertTrue(Role.objects.filter(name=flex_abac.constants.SUPERADMIN_ROLE).exists(), "Error with roles creation!")
+        self.assertTrue(Role.objects.filter(name=SUPERADMIN_ROLE).exists(), "Error with roles creation!")
         self.assertTrue(Role.objects.filter(name="flex-abac Viewer Role").exists(), "Error with roles creation!")
 
-        self.assertTrue(Policy.objects.filter(name="flex-abac Admin Policy").exists(), "Error with policies creation!")
+        self.assertTrue(Policy.objects.filter(name=SUPERADMIN_ROLE_POLICY).exists(), "Error with policies creation!")
         self.assertTrue(Policy.objects.filter(name="flex-abac Viewer Policy").exists(), "Error with policies creation!")
 
         self.assertTrue(PolicyAction.objects.filter(policy__name="flex-abac Admin Policy").exists(),
@@ -57,7 +59,7 @@ class LoadFlexAbacDataTestCase(TestCase):
     def test_load_flex_abac_data_adding_users(self):
         load_flex_abac_data(admin_users=self.admin_user_names, viewer_users=self.viewer_user_names)
 
-        self.assertTrue(Role.objects.filter(name=flex_abac.constants.SUPERADMIN_ROLE).exists(), "Error with roles creation!")
+        self.assertTrue(Role.objects.filter(name=SUPERADMIN_ROLE).exists(), "Error with roles creation!")
         self.assertTrue(Role.objects.filter(name="flex-abac Viewer Role").exists(), "Error with roles creation!")
 
         self.assertTrue(Policy.objects.filter(name="flex-abac Admin Policy").exists(), "Error with policies creation!")
@@ -69,7 +71,7 @@ class LoadFlexAbacDataTestCase(TestCase):
                         "There are no actions associated to viewer policies!")
 
         self.assertEqual(UserRole.objects.filter(user__username__in=self.admin_user_names,
-                                                 role__name=flex_abac.constants.SUPERADMIN_ROLE).count(),
+                                                 role__name=SUPERADMIN_ROLE).count(),
                          3, "Wrong number of admin users!")
 
         self.assertEqual(UserRole.objects.filter(user__username__in=self.viewer_user_names,
@@ -80,7 +82,7 @@ class LoadFlexAbacDataTestCase(TestCase):
         load_flex_abac_data(clean_users=True)
 
         self.assertEqual(UserRole.objects.filter(user__username__in=self.admin_user_names,
-                                                 role__name=flex_abac.constants.SUPERADMIN_ROLE).count(),
+                                                 role__name=SUPERADMIN_ROLE).count(),
                          0, "Wrong number of admin users!")
 
         self.assertEqual(UserRole.objects.filter(user__username__in=self.viewer_user_names,
