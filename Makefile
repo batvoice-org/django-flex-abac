@@ -2,8 +2,11 @@ MAIN_BRANCH=master
 CURRENT_VERSION = $(shell cat VERSION)
 CURRENT_BRANCH = $(shell git branch --show-current)
 
-# NOTE: In bv_build, VERSION_SUFFIX is overwritten to be ""
+# VERSION_SUFFIX is overwritten to be "" when the current branch is master
 VERSION_SUFFIX ?= "+dev.$(shell git describe --abbrev=8 --always HEAD | cut -d- -f2-).$(shell date +%s)"
+ifeq ($(CURRENT_BRANCH),$(MAIN_BRANCH))
+	undefine VERSION_SUFFIX
+endif
 
 .upgrade-pip:
 	pip install --upgrade pip
